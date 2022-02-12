@@ -27,6 +27,7 @@ namespace Application_acceptance_service.Infrastructure.Api.Controllers
         }
         
         [HttpPost]
+        [Route("create")]
         public ActionResult<object> Create([FromBody] FullApplication application)
         {
             var applicationId = _applicationManager.ProcessApplication(application);
