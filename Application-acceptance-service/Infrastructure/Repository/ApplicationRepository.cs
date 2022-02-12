@@ -50,9 +50,20 @@ namespace Application_acceptance_service.Infrastructure.Repository
             return application.Id;
         }
 
-        public void Update(ApplicationDto item)
+        public void Update(Guid id, ApplicationDto item)
         {
-            throw new NotImplementedException();
+            var application = _applicationContext.Applications
+                .FirstOrDefault(a => a.Id == id);
+            application.ApplicationNum = item.ApplicationNum;
+            application.ApplicationDate = item.ApplicationDate;
+            application.BranchBank = item.BranchBank;
+            application.BranchBankAddress = item.BranchBankAddress;
+            application.CreditManagerId = item.CreditManagerId;
+            application.ScoringStatus = item.ScoringStatus;
+            application.ScoringDate = item.ScoringDate;
+
+            _applicationContext.Applications.Update(application);
+            _applicationContext.SaveChanges();
         }
 
         public ApplicationDto Delete(Guid id)

@@ -8,7 +8,7 @@ namespace Application_acceptance_service.App
         IEnumerable<T> Get();
         T Get(Guid id);
         Guid Create(T item);
-        void Update(T item);
+        void Update(Guid id, T item);
         T Delete(Guid id);
     }
 }

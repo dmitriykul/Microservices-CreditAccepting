@@ -44,9 +44,19 @@ namespace Application_acceptance_service.Infrastructure.Repository
             return requestedCredit.Id;
         }
 
-        public void Update(RequestedCreditDto item)
+        public void Update(Guid id, RequestedCreditDto item)
         {
-            throw new NotImplementedException();
+            var requestedCredit = _applicationContext.RequestedCredits.FirstOrDefault(r => r.Id == id);
+            requestedCredit.CreditType = item.CreditType;
+            requestedCredit.RequestedAmount = item.RequestedAmount;
+            requestedCredit.RequestedCurrency = item.RequestedCurrency;
+            requestedCredit.AnnualSalary = item.AnnualSalary;
+            requestedCredit.MonthlySalary = item.MonthlySalary;
+            requestedCredit.CompanyName = item.CompanyName;
+            requestedCredit.Comment = item.Comment;
+            
+            _applicationContext.RequestedCredits.Update(requestedCredit);
+            _applicationContext.SaveChanges();
         }
 
         public RequestedCreditDto Delete(Guid id)

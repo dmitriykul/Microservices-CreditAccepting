@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application_acceptance_service.App.Types;
 using Application_acceptance_service.Domain;
+using Application_acceptance_service.Infrastructure;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace Application_acceptance_service.App
 {
     public class ApplicationManager
     {
         private IRepository<ApplicationDto> _applicationRepository;
-        public ApplicationManager(IRepository<ApplicationDto> applicationRepository)
+        private IOptions<ApplicationAcceptanceOptions> _options;
+        public ApplicationManager(IRepository<ApplicationDto> applicationRepository, IOptions<ApplicationAcceptanceOptions> options)
         {
             _applicationRepository = applicationRepository;
+            _options = options;
         }
-        public Guid ProcessApplication(FullApplication fullApplication)
+        public async Task<Guid> ProcessApplication(FullApplication fullApplication)
         {
             var applicantId = new Guid();
             var requestedCreditId = new Guid();
@@ -54,6 +61,19 @@ namespace Application_acceptance_service.App
                 }
             };
             var applicationId = _applicationRepository.Create(application);
+            
+            var client = new RestClient(_options.Value.ApplicationScoringServiceUrl);
+            var request = new RestRequest()
+                .AddJsonBody(fullApplication);
+            var response = await client.PostAsync(request);
+            if (response.Content == null)
+            {
+                return applicationId;
+            }
+            
+            var scoringStatus = JsonConvert.DeserializeObject<ScoringServiceResponse>(response.Content).ScoringStatus;
+            application.ScoringStatus = scoringStatus;
+            _applicationRepository.Update(applicationId, application);
             
             return applicationId;
         }

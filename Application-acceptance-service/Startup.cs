@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Application_acceptance_service.App;
 using Application_acceptance_service.App.Types;
+using Application_acceptance_service.Infrastructure;
 using Application_acceptance_service.Infrastructure.Automapper;
 using Application_acceptance_service.Infrastructure.Database;
 using Application_acceptance_service.Infrastructure.Repository;
@@ -35,6 +36,7 @@ namespace Application_acceptance_service
             try
             {
                 var options = optionsBuilder
+                    //.UseLazyLoadingProxies()
                     .UseNpgsql(connection)
                     .Options;
                 using var db = new ApplicationContext(options);
@@ -51,7 +53,8 @@ namespace Application_acceptance_service
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
-            
+
+            services.Configure<ApplicationAcceptanceOptions>(Configuration.GetSection("ApplicationAcceptanceOptions"));
             services.AddAutoMapper(typeof(AppMappingProfile));
             services.AddTransient<IRepository<RequestedCreditDto>, RequestedCreditRepository>();
             services.AddTransient<IRepository<ApplicantDto>, ApplicantRepository>();

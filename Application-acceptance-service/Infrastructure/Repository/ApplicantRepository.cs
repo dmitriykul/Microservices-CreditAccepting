@@ -44,9 +44,22 @@ namespace Application_acceptance_service.Infrastructure.Repository
             return applicant.Id;
         }
 
-        public void Update(ApplicantDto item)
+        public void Update(Guid id, ApplicantDto item)
         {
-            throw new NotImplementedException();
+            var applicant = _applicationContext.Applicants.FirstOrDefault(a => a.Id == id);
+            applicant.FirstName = item.FirstName;
+            applicant.MiddleName = item.MiddleName;
+            applicant.LastName = item.LastName;
+            applicant.DateBirth = item.DateBirth;
+            applicant.CityBirth = item.CityBirth;
+            applicant.AddressBirth = item.AddressBirth;
+            applicant.AddressCurrent = item.AddressCurrent;
+            applicant.INN = item.INN;
+            applicant.SNILS = item.SNILS;
+            applicant.PassportNum = applicant.PassportNum;
+            
+            _applicationContext.Applicants.Update(applicant);
+            _applicationContext.SaveChanges();
         }
 
         public ApplicantDto Delete(Guid id)
