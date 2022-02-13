@@ -12,7 +12,7 @@
 
 На рисунке ниже представлена упрощенная структура сервиса заявки на кредит
 
-![Untitled Diagram-Page-3.drawio](https://github.com/dmitriykul/Microservices-CreditAccepting/readmeImages/Untitled Diagram-Page-3.drawio.png)
+![Untitled Diagram-Page-3.drawio](https://github.com/dmitriykul/Microservices-CreditAccepting/readmeImages/Diagram-Page-3.drawio.png)
 
 
 
@@ -24,4 +24,4 @@
 
 На рисунке ниже представлена упрощенная структура сервиса оценки возможности выдачи кредита
 
-![Untitled Diagram-Page-4.drawio](https://github.com/dmitriykul/Microservices-CreditAccepting/readmeImages/Untitled Diagram-Page-4.drawio.png)
+![Untitled Diagram-Page-4.drawio](https://github.com/dmitriykul/Microservices-CreditAccepting/readmeImages/Diagram-Page-4.drawio.png)
