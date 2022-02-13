@@ -1,6 +1,9 @@
 ﻿
 namespace Application_acceptance_service.App.Types
 {
+    /// <summary>
+    /// DTO модель для запрашиваемого кредита
+    /// </summary>
     public class RequestedCreditDto
     {
         public int CreditType { get; set; }

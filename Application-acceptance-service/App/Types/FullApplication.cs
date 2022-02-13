@@ -2,6 +2,9 @@
 
 namespace Application_acceptance_service.App.Types
 {
+    /// <summary>
+    /// Входящая заявка на кредит
+    /// </summary>
     public class FullApplication
     {
         public string ApplicationNum { get; set; }

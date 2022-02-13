@@ -1,6 +1,5 @@
 ﻿using System;
 using Application_Scoring_Service.App.Types;
-using Microsoft.Extensions.Logging;
 
 namespace Application_Scoring_Service.App
 {

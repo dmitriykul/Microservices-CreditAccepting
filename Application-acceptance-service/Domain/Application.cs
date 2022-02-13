@@ -2,6 +2,9 @@
 
 namespace Application_acceptance_service.Domain
 {
+    /// <summary>
+    /// Заявка на кредит
+    /// </summary>
     public class Application
     {
         public Guid Id { get; set; }

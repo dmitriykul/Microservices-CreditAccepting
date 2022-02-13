@@ -3,6 +3,9 @@ using Application_acceptance_service.Domain;
 
 namespace Application_acceptance_service.App.Types
 {
+    /// <summary>
+    /// DTO модель для заявки на кредит
+    /// </summary>
     public class ApplicationDto
     {
         public string ApplicationNum { get; set; }

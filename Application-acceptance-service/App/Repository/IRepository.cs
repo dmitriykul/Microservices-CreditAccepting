@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Application_acceptance_service.App
 {
     public interface IRepository<T>
     {
         IEnumerable<T> Get();
-        T Get(Guid id);
-        Guid Create(T item);
+        Task<T> Get(Guid id);
+        Task<Guid> Create(T item);
         void Update(Guid id, T item);
-        T Delete(Guid id);
+        Task<T >Delete(Guid id);
     }
 }

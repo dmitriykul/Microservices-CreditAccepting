@@ -10,6 +10,9 @@ using RestSharp;
 
 namespace Application_acceptance_service.App
 {
+    /// <summary>
+    /// ApplicationManager обрабатывает входящую заявку на кредит
+    /// </summary>
     public class ApplicationManager
     {
         private IRepository<ApplicationDto> _applicationRepository;
@@ -19,10 +22,16 @@ namespace Application_acceptance_service.App
             _applicationRepository = applicationRepository;
             _options = options;
         }
+        
+        /// <summary>
+        /// Обработать заявку на кредит
+        /// </summary>
+        /// <param name="fullApplication">Входящая заявка на кредит</param>
+        /// <returns>Id созданной заявки</returns>
         public async Task<Guid> ProcessApplication(FullApplication fullApplication)
         {
-            var applicantId = new Guid();
-            var requestedCreditId = new Guid();
+            var applicantId = Guid.NewGuid();
+            var requestedCreditId = Guid.NewGuid();
             var application = new ApplicationDto
             {
                 ApplicationNum = fullApplication.ApplicationNum,
@@ -60,7 +69,7 @@ namespace Application_acceptance_service.App
                     Applications = new List<Application>()
                 }
             };
-            var applicationId = _applicationRepository.Create(application);
+            var applicationId = await _applicationRepository.Create(application);
             
             var client = new RestClient(_options.Value.ApplicationScoringServiceUrl);
             var request = new RestRequest()
@@ -71,8 +80,9 @@ namespace Application_acceptance_service.App
                 return applicationId;
             }
             
-            var scoringStatus = JsonConvert.DeserializeObject<ScoringServiceResponse>(response.Content).ScoringStatus;
+            var scoringStatus = JsonConvert.DeserializeObject<ScoringServiceResponse>(response.Content)!.ScoringStatus;
             application.ScoringStatus = scoringStatus;
+            application.ScoringDate = DateTime.Now;
             _applicationRepository.Update(applicationId, application);
             
             return applicationId;

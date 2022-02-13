@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Application_acceptance_service.Domain
 {
+    /// <summary>
+    /// Запрашиваемый кредит
+    /// </summary>
     public class RequestedCredit
     {
         public Guid Id { get; set; }

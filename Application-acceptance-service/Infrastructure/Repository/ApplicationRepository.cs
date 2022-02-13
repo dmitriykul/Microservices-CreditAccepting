@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application_acceptance_service.App;
 using Application_acceptance_service.App.Types;
 using Application_acceptance_service.Domain;
@@ -30,30 +31,30 @@ namespace Application_acceptance_service.Infrastructure.Repository
             return applications.Select(a => _mapper.Map<ApplicationDto>(a));
         }
 
-        public ApplicationDto Get(Guid id)
+        public async Task<ApplicationDto> Get(Guid id)
         {
-            var application = _applicationContext.Applications
+            var application = await _applicationContext.Applications
                 .Include(a => a.Applicant)
                 .Include(a => a.RequestedCredit)
-                .FirstOrDefault(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
             
             return application != null ? _mapper.Map<ApplicationDto>(application) : null;
         }
 
-        public Guid Create(ApplicationDto item)
+        public async Task<Guid> Create(ApplicationDto item)
         {
             var application = _mapper.Map<Application>(item);
             application.Id = new Guid();
-            _applicationContext.Applications.Add(application);
-            _applicationContext.SaveChanges();
+            await _applicationContext.Applications.AddAsync(application);
+            await _applicationContext.SaveChangesAsync();
 
             return application.Id;
         }
 
-        public void Update(Guid id, ApplicationDto item)
+        public async void Update(Guid id, ApplicationDto item)
         {
-            var application = _applicationContext.Applications
-                .FirstOrDefault(a => a.Id == id);
+            var application = await _applicationContext.Applications
+                .FirstOrDefaultAsync(a => a.Id == id);
             application.ApplicationNum = item.ApplicationNum;
             application.ApplicationDate = item.ApplicationDate;
             application.BranchBank = item.BranchBank;
@@ -63,12 +64,12 @@ namespace Application_acceptance_service.Infrastructure.Repository
             application.ScoringDate = item.ScoringDate;
 
             _applicationContext.Applications.Update(application);
-            _applicationContext.SaveChanges();
+            await _applicationContext.SaveChangesAsync();
         }
 
-        public ApplicationDto Delete(Guid id)
+        public async Task<ApplicationDto> Delete(Guid id)
         {
-            var deletedApplication = _applicationContext.Applications.FirstOrDefault(r => r.Id == id);
+            var deletedApplication = await _applicationContext.Applications.FirstOrDefaultAsync(r => r.Id == id);
             if (deletedApplication == null) return null;
             _applicationContext.Applications.Remove(deletedApplication);
 

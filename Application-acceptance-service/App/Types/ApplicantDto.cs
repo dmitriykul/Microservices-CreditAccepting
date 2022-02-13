@@ -2,6 +2,9 @@
 
 namespace Application_acceptance_service.App.Types
 {
+    /// <summary>
+    /// DTO модель для заявителя на кредит
+    /// </summary>
     public class ApplicantDto
     {
         public string FirstName { get; set; }

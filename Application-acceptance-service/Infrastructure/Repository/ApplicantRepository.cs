@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Application_acceptance_service.App;
 using Application_acceptance_service.App.Types;
 using Application_acceptance_service.Domain;
 using Application_acceptance_service.Infrastructure.Database;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application_acceptance_service.Infrastructure.Repository
 {
@@ -27,26 +29,26 @@ namespace Application_acceptance_service.Infrastructure.Repository
             return applicants.Select(a => _mapper.Map<ApplicantDto>(a));
         }
 
-        public ApplicantDto Get(Guid id)
+        public async Task<ApplicantDto> Get(Guid id)
         {
-            var applicant = _applicationContext.Applicants.FirstOrDefault(a => a.Id == id);
+            var applicant = await _applicationContext.Applicants.FirstOrDefaultAsync(a => a.Id == id);
             
             return applicant != null ? _mapper.Map<ApplicantDto>(applicant) : null;
         }
 
-        public Guid Create(ApplicantDto item)
+        public async Task<Guid> Create(ApplicantDto item)
         {
             var applicant = _mapper.Map<Applicant>(item);
             applicant.Id = new Guid();
-            _applicationContext.Applicants.Add(applicant);
-            _applicationContext.SaveChanges();
+            await _applicationContext.Applicants.AddAsync(applicant);
+            await _applicationContext.SaveChangesAsync();
 
             return applicant.Id;
         }
 
-        public void Update(Guid id, ApplicantDto item)
+        public async void Update(Guid id, ApplicantDto item)
         {
-            var applicant = _applicationContext.Applicants.FirstOrDefault(a => a.Id == id);
+            var applicant = await _applicationContext.Applicants.FirstOrDefaultAsync(a => a.Id == id);
             applicant.FirstName = item.FirstName;
             applicant.MiddleName = item.MiddleName;
             applicant.LastName = item.LastName;
@@ -59,12 +61,12 @@ namespace Application_acceptance_service.Infrastructure.Repository
             applicant.PassportNum = applicant.PassportNum;
             
             _applicationContext.Applicants.Update(applicant);
-            _applicationContext.SaveChanges();
+            await _applicationContext.SaveChangesAsync();
         }
 
-        public ApplicantDto Delete(Guid id)
+        public async Task<ApplicantDto> Delete(Guid id)
         {
-            var deletedApplicant = _applicationContext.Applicants.FirstOrDefault(a => a.Id == id);
+            var deletedApplicant = await _applicationContext.Applicants.FirstOrDefaultAsync(a => a.Id == id);
             if (deletedApplicant == null) return null;
             _applicationContext.Applicants.Remove(deletedApplicant);
 

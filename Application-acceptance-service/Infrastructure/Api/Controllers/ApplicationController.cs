@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Application_acceptance_service.App;
 using Application_acceptance_service.App.Types;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using RestSharp;
 
 namespace Application_acceptance_service.Infrastructure.Api.Controllers
 {
+    /// <summary>
+    /// Контроллер обработки заявок на кредит
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class ApplicationController : ControllerBase
@@ -18,16 +17,20 @@ namespace Application_acceptance_service.Infrastructure.Api.Controllers
         private ApplicationManager _applicationManager;
         private ILogger<ApplicationController> _logger;
         private IRepository<ApplicationDto> _applicationRepository;
-        private IOptions<ApplicationAcceptanceOptions> _options;
         public ApplicationController(ApplicationManager applicationManager, ILogger<ApplicationController> logger,
-            IRepository<ApplicationDto> applicationRepository, IOptions<ApplicationAcceptanceOptions> options)
+            IRepository<ApplicationDto> applicationRepository)
         {
             _applicationManager = applicationManager;
             _logger = logger;
             _applicationRepository = applicationRepository;
-            _options = options;
         }
         
+        /// <summary>
+        /// Принять заявку на получение кредита
+        /// </summary>
+        /// <param name="application">Заявка на получение кредита</param>
+        /// <returns>Id созданной заявки</returns>
+        /// <response code="200">Заявка обработана</response>
         [HttpPost]
         [Route("create")]
         public async Task<ActionResult<object>> Create([FromBody] FullApplication application)
@@ -36,14 +39,28 @@ namespace Application_acceptance_service.Infrastructure.Api.Controllers
 
             _logger.LogInformation("Получена заявка на одобрение кредита, Id заявки:{Id}", applicationId);
             
-            return new {ApplicationId = applicationId, ApplicationNum = application.ApplicationNum};
+            return new {ApplicationId = applicationId, application.ApplicationNum};
         }
 
+        /// <summary>
+        /// Получить статус по заявке
+        /// </summary>
+        /// <param name="applicationId">Id заявки на кредит</param>
+        /// <returns>Информация о статусе заявки</returns>
+        /// <response code="200">Статус о заявке</response>
+        /// <response code="404">Заявка не найдена</response>
         [HttpGet]
         [Route("status")]
-        public ActionResult<object> Status([FromQuery] Guid applicationId)
+        public async Task<ActionResult<object>> Status([FromQuery] Guid applicationId)
         {
-            var application = _applicationRepository.Get(applicationId);
+            var application = await _applicationRepository.Get(applicationId);
+
+            if (application == null)
+            {
+                return NotFound("Заявка не найдена");
+            }
+            
+            _logger.LogInformation("Запрошен статус по заявке с Id:{Id}", applicationId);
 
             return new
             {

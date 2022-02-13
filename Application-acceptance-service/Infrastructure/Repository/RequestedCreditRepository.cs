@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Application_acceptance_service.App;
 using Application_acceptance_service.App.Types;
 using Application_acceptance_service.Domain;
 using Application_acceptance_service.Infrastructure.Database;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application_acceptance_service.Infrastructure.Repository
 {
@@ -27,26 +29,26 @@ namespace Application_acceptance_service.Infrastructure.Repository
             return requestedCredits.Select(r => _mapper.Map<RequestedCreditDto>(r));
         }
 
-        public RequestedCreditDto Get(Guid id)
+        public async Task<RequestedCreditDto> Get(Guid id)
         {
-            var requestedCredit = _applicationContext.RequestedCredits.FirstOrDefault(r => r.Id == id);
+            var requestedCredit = await _applicationContext.RequestedCredits.FirstOrDefaultAsync(r => r.Id == id);
             
             return requestedCredit != null ? _mapper.Map<RequestedCreditDto>(requestedCredit) : null;
         }
 
-        public Guid Create(RequestedCreditDto item)
+        public async Task<Guid> Create(RequestedCreditDto item)
         {
             var requestedCredit = _mapper.Map<RequestedCredit>(item);
             requestedCredit.Id = new Guid();
-            _applicationContext.RequestedCredits.Add(requestedCredit);
-            _applicationContext.SaveChanges();
+            await _applicationContext.RequestedCredits.AddAsync(requestedCredit);
+            await _applicationContext.SaveChangesAsync();
 
             return requestedCredit.Id;
         }
 
-        public void Update(Guid id, RequestedCreditDto item)
+        public async void Update(Guid id, RequestedCreditDto item)
         {
-            var requestedCredit = _applicationContext.RequestedCredits.FirstOrDefault(r => r.Id == id);
+            var requestedCredit = await _applicationContext.RequestedCredits.FirstOrDefaultAsync(r => r.Id == id);
             requestedCredit.CreditType = item.CreditType;
             requestedCredit.RequestedAmount = item.RequestedAmount;
             requestedCredit.RequestedCurrency = item.RequestedCurrency;
@@ -56,12 +58,12 @@ namespace Application_acceptance_service.Infrastructure.Repository
             requestedCredit.Comment = item.Comment;
             
             _applicationContext.RequestedCredits.Update(requestedCredit);
-            _applicationContext.SaveChanges();
+            await _applicationContext.SaveChangesAsync();
         }
 
-        public RequestedCreditDto Delete(Guid id)
+        public async Task<RequestedCreditDto> Delete(Guid id)
         {
-            var deletedRequestedCredit = _applicationContext.RequestedCredits.FirstOrDefault(r => r.Id == id);
+            var deletedRequestedCredit = await _applicationContext.RequestedCredits.FirstOrDefaultAsync(r => r.Id == id);
             if (deletedRequestedCredit == null) return null;
             _applicationContext.RequestedCredits.Remove(deletedRequestedCredit);
 
