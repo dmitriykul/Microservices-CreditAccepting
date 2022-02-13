@@ -10,6 +10,6 @@ namespace Application_acceptance_service.App
         Task<T> Get(Guid id);
         Task<Guid> Create(T item);
         void Update(Guid id, T item);
-        Task<T >Delete(Guid id);
+        Task<T>Delete(Guid id);
     }
 }

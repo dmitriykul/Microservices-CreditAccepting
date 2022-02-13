@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace Application_Scoring_Service.Infrastructure.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ScoringApplicationController : ControllerBase
     {
         private ApplicationScoringManager _applicationScoringManager;

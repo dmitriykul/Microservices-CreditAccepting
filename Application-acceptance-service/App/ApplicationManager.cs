@@ -37,7 +37,7 @@ namespace Application_acceptance_service.App
                 ApplicationNum = fullApplication.ApplicationNum,
                 ApplicationDate = fullApplication.ApplicationDate,
                 BranchBank = fullApplication.BranchBank,
-                BranchBankAddress = fullApplication.BranchAddress,
+                BranchBankAddress = fullApplication.BranchBankAddress,
                 CreditManagerId = fullApplication.CreditManagerId,
                 ApplicantId = applicantId,
                 RequestedCreditId = requestedCreditId,
