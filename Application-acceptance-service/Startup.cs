@@ -7,6 +7,7 @@ using Application_acceptance_service.Infrastructure;
 using Application_acceptance_service.Infrastructure.Automapper;
 using Application_acceptance_service.Infrastructure.Database;
 using Application_acceptance_service.Infrastructure.Repository;
+using Application_acceptance_service.Infrastructure.ScoringService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +61,8 @@ namespace Application_acceptance_service
             services.AddTransient<IRepository<ApplicantDto>, ApplicantRepository>();
             services.AddTransient<IRepository<ApplicationDto>, ApplicationRepository>();
             services.AddTransient<ApplicationManager>();
+            services.AddHttpClient();
+            services.AddScoped<IScoringService, ScoringService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

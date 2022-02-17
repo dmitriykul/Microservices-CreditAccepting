@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Application_acceptance_service.App.Types;
 using Application_acceptance_service.Domain;
-using Application_acceptance_service.Infrastructure;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using RestSharp;
 
 namespace Application_acceptance_service.App
 {
@@ -16,11 +12,11 @@ namespace Application_acceptance_service.App
     public class ApplicationManager
     {
         private IRepository<ApplicationDto> _applicationRepository;
-        private IOptions<ApplicationAcceptanceOptions> _options;
-        public ApplicationManager(IRepository<ApplicationDto> applicationRepository, IOptions<ApplicationAcceptanceOptions> options)
+        private IScoringService _scoringService;
+        public ApplicationManager(IRepository<ApplicationDto> applicationRepository, IScoringService scoringService)
         {
             _applicationRepository = applicationRepository;
-            _options = options;
+            _scoringService = scoringService;
         }
         
         /// <summary>
@@ -70,18 +66,12 @@ namespace Application_acceptance_service.App
                 }
             };
             var applicationId = await _applicationRepository.Create(application);
-            
-            var client = new RestClient(_options.Value.ApplicationScoringServiceUrl);
-            var request = new RestRequest()
-                .AddJsonBody(fullApplication);
-            var response = await client.PostAsync(request);
-            if (response.Content == null)
+            var scoringStatus = await _scoringService.ScoreApplication(fullApplication);
+            if (scoringStatus == null)
             {
-                return applicationId;
+                return applicantId;
             }
-            
-            var scoringStatus = JsonConvert.DeserializeObject<ScoringServiceResponse>(response.Content)!.ScoringStatus;
-            application.ScoringStatus = scoringStatus;
+            application.ScoringStatus = scoringStatus.Value;
             application.ScoringDate = DateTime.Now;
             _applicationRepository.Update(applicationId, application);
             
